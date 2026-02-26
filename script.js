@@ -12,6 +12,16 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     });
 });
 
+// Parallax effect for hero section
+window.addEventListener('scroll', () => {
+    const scrolled = window.pageYOffset;
+    const hero = document.querySelector('.hero');
+    if (hero) {
+        hero.style.transform = `translateY(${scrolled * 0.5}px)`;
+        hero.style.opacity = 1 - (scrolled / 600);
+    }
+});
+
 // Add scroll effect to navbar
 let lastScroll = 0;
 const navbar = document.querySelector('.navbar');
@@ -20,9 +30,11 @@ window.addEventListener('scroll', () => {
     const currentScroll = window.pageYOffset;
     
     if (currentScroll > 100) {
-        navbar.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.3)';
+        navbar.style.boxShadow = '0 8px 32px rgba(0, 0, 0, 0.5)';
+        navbar.style.background = 'rgba(15, 15, 30, 0.95)';
     } else {
         navbar.style.boxShadow = 'none';
+        navbar.style.background = 'rgba(15, 15, 30, 0.8)';
     }
     
     lastScroll = currentScroll;
@@ -211,15 +223,46 @@ document.querySelectorAll('.stat').forEach(stat => {
     statsObserver.observe(stat);
 });
 
-// Add hover effect to game cards
+// Add hover effect to game cards with tilt
 document.querySelectorAll('.game-card').forEach(card => {
     card.addEventListener('mouseenter', function() {
-        this.style.borderColor = 'var(--primary)';
+        this.style.borderColor = 'rgba(99, 102, 241, 0.6)';
     });
     
     card.addEventListener('mouseleave', function() {
-        this.style.borderColor = 'rgba(102, 126, 234, 0.1)';
+        this.style.borderColor = 'rgba(99, 102, 241, 0.2)';
+        this.style.transform = '';
+    });
+    
+    // 3D tilt effect
+    card.addEventListener('mousemove', function(e) {
+        const rect = this.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        
+        const rotateX = (y - centerY) / 20;
+        const rotateY = (centerX - x) / 20;
+        
+        this.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-12px) scale(1.02)`;
     });
 });
+
+// Floating animation for feature icons
+document.querySelectorAll('.feature-icon').forEach((icon, index) => {
+    icon.style.animation = `float 3s ease-in-out ${index * 0.2}s infinite`;
+});
+
+// Add CSS for float animation
+const floatStyle = document.createElement('style');
+floatStyle.textContent = `
+    @keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
+    }
+`;
+document.head.appendChild(floatStyle);
 
 console.log('🎮 RoUI Market - Website loaded successfully!');
